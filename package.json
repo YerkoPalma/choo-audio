@@ -1,0 +1,20 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "## Usage",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard --verbose | snazzy",
+    "start": "budo -p 8080 -H 0.0.0.0 -d media example.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "budo": "^10.0.4",
+    "choo": "^6.6.0",
+    "choo-devtools": "^2.2.0",
+    "snazzy": "^7.0.0",
+    "standard": "^10.0.3"
+  }
+}
