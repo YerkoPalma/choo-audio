@@ -48,6 +48,11 @@ function audio (opts) {
       emitter.on(events.PAUSE, function () {
         state.audio.playlist[state.audio.index].pause()
       })
+      // stop
+      emitter.on(events.STOP, function () {
+        state.audio.playlist[state.audio.index].stop()
+        state.audio.index = 0
+      })
       // next
       emitter.on(events.NEXT, function () {
         if (state.audio.isPlaying) {
