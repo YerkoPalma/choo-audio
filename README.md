@@ -30,13 +30,43 @@ function sounds (state, emitter, app) {
 }
 ```
 
+## How it works?
+
+The whole plugin is based on the web-audio-graph module. It basically dynamically 
+build a graph representing different sources to be played by the user. 
+To start, a track is defined as a simple graph with two nodes.
+
+```text
+bufferSource > filter > gain > contextDestination
+```
+
+there are some ways to manipulate this graph, more on that later. 
+This basic, opinionated graph is built when you call the `load` event. If you add 
+other source it is another branch of the graph connected to the same destination.
+So, for instance, if you call load again you will have something like
+
+```text
+bufferSource > filter > gain >---+ 
+                                 |
+                                contextDestination
+                                 |
+bufferSource > filter > gain >---+
+```
+
+Keep in mind that buffer sources are internally stored into an array, and there 
+is always a _current track_. If you add nodes, they will be added to the current 
+track. If you add a user input source, it will not be stored in the same playlist, 
+so it will never be the current track
+
 ## Events
 ### `audio:load`
 Emit this to load an audio source. You can pass an url (string) or directly pass 
-the [AudioBuffer][AudioBuffer] instance. _Also you can pass an array of strings 
+the [AudioBuffer][AudioBuffer] instance. Also you can pass an array of strings 
 or AudioBuffer, if this is the case, when you trigger the `play` event, all of 
 the source will play together, use this if you want to build atmospheric sounds or 
-to mix many audio files into one, later with the `record` events._
+to mix many audio files into one, later with the `record` events.
+
+### `audio:get-user-input`
 
 ### `audio:play`
 Emit this to play the current audio track. If the current track has more than 
@@ -45,11 +75,6 @@ Also notice that if the current track were paused, it will restart from the minu
 it were paused. Can optionally get two parameters `time` a float to specify the 
 time from which to start playing, defaults to 0, and `loop` a boolean to set if 
 the track should play again, defaults to true.
-
-### `audio:load-and-play`
-Emit this to load an audio source and play it inmediatly. Works almost identically 
-to the load event, with the difference that you can pass arrays, and the played 
-track will not be saved to play again.
 
 ### `audio:play-all`
 Emit this to play all the tracks loaded.
@@ -65,12 +90,16 @@ Start recording with a MediaRecorder object. Get a single boolean argument to sa
 if you want to record from the main source (`true`), or from the user media devices 
 (`false`).
 
+### `audio:start-sharing`
+
 ### `audio:download`
 Download the main source for the current track.
 
 ### `audio:stop-recording`
 Stop a recording started with `start-recording` event. Get a callback as the 
 parameter. The callback will get a Blob object with audio data.
+
+### `audio:stop-sharing`
 
 ### `audio:pause`
 Pause the current track,   if the `play` event is trggered after, it will start 
@@ -79,11 +108,11 @@ playing from where it got paused.
 ### `audio:stop`
 Stop the current track being played and reset the list to the first track.
 
-### `audio:set-filter`
+### `audio:set`
 Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio graph.
 
-### `audio:set-volume`
-Set the volume of the audio through the [GainNode][GainNode].
+### `audio:add-node`
+Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio graph.
 
 ### `audio:mix`
 Mix a new source. Get a string or AudioBuffer and will play both sources, you can 

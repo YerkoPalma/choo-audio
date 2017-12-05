@@ -3,14 +3,21 @@ module.exports = audio
 
 var events = audio.events = {
   LOAD: 'audio:load',
-  LOAD_AND_PLAY: 'audio:load-and-play',
+  GET_USER_INPUT: 'audio:get-user-input',
   PLAY: 'audio:play',
   PLAY_ALL: 'audio:play-all',
   REMOVE: 'audio:remove',
   REMOVE_ALL: 'audio:remove-all',
-  FILTER: 'audio:filter',
+  START_RECORDING: 'audio:start-recording',
+  STOP_RECORDING: 'audio:stop-recording',
+  ADD_NODE: 'audio:add-node',
+  ADD_SIGNAL: 'audio:add-signal',
+  PLAY_SIGNAL: 'audio:play-signal',
+  STOP_SIGNAL: 'audio:stop-signal',
   STOP: 'audio:stop',
+  SET: 'audio:set',
   NEXT: 'audio:next',
+  PREV: 'audio:prev',
   PAUSE: 'audio:pause',
   ERROR: 'audio:error'
 }
