@@ -88,6 +88,18 @@ function audio (opts) {
       emitter.on(events.ADD_NODE, function ({ type, config }) {
         audioManager.addNode(type, config)
       })
+      // add signal
+      emitter.on(events.ADD_SIGNAL, function ({ id, frequency, type }) {
+        audioManager.addSignal(id, frequency, type)
+      })
+      // play signal
+      emitter.on(events.PLAY_SIGNAL, function (id) {
+        audioManager.playSignal(id)
+      })
+      // stop signal
+      emitter.on(events.STOP_SIGNAL, function (id) {
+        audioManager.stopSignal(id)
+      })
     } catch (e) {
       emitter.emit(events.ERROR, e)
     }
