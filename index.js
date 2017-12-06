@@ -10,12 +10,12 @@ var events = audio.events = {
   REMOVE_ALL: 'audio:remove-all', //
   START_RECORDING: 'audio:start-recording', //
   STOP_RECORDING: 'audio:stop-recording', //
-  ADD_NODE: 'audio:add-node',
+  ADD_NODE: 'audio:add-node', //
   ADD_SIGNAL: 'audio:add-signal',
   PLAY_SIGNAL: 'audio:play-signal',
   STOP_SIGNAL: 'audio:stop-signal',
   STOP: 'audio:stop', //
-  SET: 'audio:set',
+  SET: 'audio:set', //
   NEXT: 'audio:next', //
   PREV: 'audio:prev', //
   PAUSE: 'audio:pause', //
@@ -79,6 +79,14 @@ function audio (opts) {
       // stop recording
       emitter.on(events.START_RECORDING, function (cb) {
         audioManager.stopRecording(cb)
+      })
+      // set
+      emitter.on(events.SET, function (config) {
+        audioManager.set(config)
+      })
+      // add node
+      emitter.on(events.ADD_NODE, function ({ type, config }) {
+        audioManager.addNode(type, config)
       })
     } catch (e) {
       emitter.emit(events.ERROR, e)
