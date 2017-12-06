@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "standard --verbose | snazzy",
-    "start": "budo -p 8080 -H 0.0.0.0 -d media example.js"
+    "start": "budo -p 8080 -H 0.0.0.0 -d example example/example.js:bundle.js -- -t sheetify"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +14,12 @@
     "budo": "^10.0.4",
     "choo": "^6.6.0",
     "choo-devtools": "^2.2.0",
+    "sheetify": "^6.2.0",
     "snazzy": "^7.0.0",
     "standard": "^10.0.3"
+  },
+  "dependencies": {
+    "is-audio-buffer": "^1.0.11",
+    "web-audio-graph": "^1.0.0"
   }
 }

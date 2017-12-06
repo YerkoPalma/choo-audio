@@ -11,9 +11,9 @@ var events = audio.events = {
   START_RECORDING: 'audio:start-recording', //
   STOP_RECORDING: 'audio:stop-recording', //
   ADD_NODE: 'audio:add-node', //
-  ADD_SIGNAL: 'audio:add-signal',
-  PLAY_SIGNAL: 'audio:play-signal',
-  STOP_SIGNAL: 'audio:stop-signal',
+  ADD_SIGNAL: 'audio:add-signal', //
+  PLAY_SIGNAL: 'audio:play-signal', //
+  STOP_SIGNAL: 'audio:stop-signal', //
   STOP: 'audio:stop', //
   SET: 'audio:set', //
   NEXT: 'audio:next', //
