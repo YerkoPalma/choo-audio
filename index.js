@@ -1,25 +1,25 @@
-var AudioTrack = require('./lib/AudioTrack')
+var AudioManager = require('./lib/AudioManager')
 module.exports = audio
 
 var events = audio.events = {
-  LOAD: 'audio:load',
-  GET_USER_INPUT: 'audio:get-user-input',
-  PLAY: 'audio:play',
+  LOAD: 'audio:load', //
+  GET_USER_INPUT: 'audio:get-user-input', //
+  PLAY: 'audio:play', //
   PLAY_ALL: 'audio:play-all',
   REMOVE: 'audio:remove',
-  REMOVE_ALL: 'audio:remove-all',
+  REMOVE_ALL: 'audio:remove-all', //
   START_RECORDING: 'audio:start-recording',
   STOP_RECORDING: 'audio:stop-recording',
   ADD_NODE: 'audio:add-node',
   ADD_SIGNAL: 'audio:add-signal',
   PLAY_SIGNAL: 'audio:play-signal',
   STOP_SIGNAL: 'audio:stop-signal',
-  STOP: 'audio:stop',
+  STOP: 'audio:stop', //
   SET: 'audio:set',
-  NEXT: 'audio:next',
-  PREV: 'audio:prev',
-  PAUSE: 'audio:pause',
-  ERROR: 'audio:error'
+  NEXT: 'audio:next', //
+  PREV: 'audio:prev', //
+  PAUSE: 'audio:pause', //
+  ERROR: 'audio:error' //
 }
 
 function audio (opts) {
@@ -27,54 +27,42 @@ function audio (opts) {
 
   return function (state, emitter) {
     state.audio = {}
-    state.audio.playlist = []
-    state.audio.index = 0
-    Object.defineProperty(state.audio, 'isPlaying', { get: function () {
-      return state.audio.playlist[state.audio.index].isPlaying || false
-    }})
+    var audioManager = AudioManager()
+
     try {
       // load
       emitter.on(events.LOAD, function (url) {
-        var track = new AudioTrack(url)
-        track.init().then(() => {
-          state.audio.playlist.push(track)
-        })
+        audioManager.load(url)
       })
-      // load and play
-      emitter.on(events.LOAD_AND_PLAY, function (url) {
-        var track = new AudioTrack(url)
-        track.init().then(() => {
-          track.play()
-        })
+      // get user input
+      emitter.on(events.GET_USER_INPUT, function () {
+        audioManager.getUserInput()
       })
       // play
       emitter.on(events.PLAY, function () {
-        state.audio.playlist[state.audio.index].play()
+        audioManager.play()
       })
       // pause
       emitter.on(events.PAUSE, function () {
-        state.audio.playlist[state.audio.index].pause()
+        audioManager.pause()
       })
       // stop
       emitter.on(events.STOP, function () {
-        state.audio.playlist[state.audio.index].stop()
-        state.audio.index = 0
+        audioManager.stop()
       })
       // next
       emitter.on(events.NEXT, function () {
-        if (state.audio.isPlaying) {
-          state.audio.playlist[state.audio.index].pause()
-          state.audio.index++
-          state.audio.playlist[state.audio.index].play()
-        } else {
-          state.audio.index++
-        }
+        audioManager.next()
+      })
+      // prev
+      emitter.on(events.PREV, function () {
+        audioManager.prev()
       })
       // remove all
       emitter.on(events.REMOVE_ALL, function () {
-        state.audio.playlist = []
+        audioManager.removeAll()
       })
-      // filter
+      // get user input
       emitter.on(events.FILTER, function (filterSettings) {
         state.audio.playlist[state.audio.index].setFilter(filterSettings)
       })
