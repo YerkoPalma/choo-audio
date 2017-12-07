@@ -31,6 +31,9 @@ function audio (opts) {
     state.audio = {}
     var audioManager = AudioManager()
 
+    state.audio.graph = audioManager.graph
+    state.audio.tracklist = audioManager.tracklist
+    state.audio.index = audioManager.index
     try {
       // load
       emitter.on(events.LOAD, function (url) {
