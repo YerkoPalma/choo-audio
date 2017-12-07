@@ -34,7 +34,11 @@ function mainView (state, emit) {
         </li>
     
         <li>
-          <input type="radio" name="radio" data-icon="❮❮" /><input type="radio" name="radio" data-icon="►" /><input type="radio" name="radio" data-icon="❯❯" />
+          <input type="radio" name="radio" data-icon="❮❮" />
+          <input type="radio" name="radio" data-icon="►" />
+          <input type="radio" name="radio" data-icon="❯❯" />
+          <input type="radio" name="radio" data-icon="■" />
+          <input type="radio" name="radio" data-icon="●" />
         </li>
     
             <li>
