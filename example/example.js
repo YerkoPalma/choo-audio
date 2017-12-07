@@ -75,7 +75,7 @@ function loadSounds (state, emitter) {
     emitter.emit('render')
   })
   emitter.on('DOMContentLoaded', function () {
-    emitter.emit('audio:load', 'media/techno.wav')
+    // emitter.emit('audio:load', 'media/techno.wav')
     emitter.emit('audio:load', 'media/the-birds.wav')
     emitter.emit('audio:load', 'media/ambient-loop.wav')
   })
