@@ -3,6 +3,7 @@ module.exports = audio
 
 var events = audio.events = {
   LOAD: 'audio:load', //
+  LOAD_COMPLETE: 'audio:load-complete', //
   GET_USER_INPUT: 'audio:get-user-input', //
   PLAY: 'audio:play', //
   PLAY_ALL: 'audio:play-all', //
@@ -10,6 +11,7 @@ var events = audio.events = {
   REMOVE_ALL: 'audio:remove-all', //
   START_RECORDING: 'audio:start-recording', //
   STOP_RECORDING: 'audio:stop-recording', //
+  RECORD_COMPLETE: 'audio:record-complete', //
   ADD_NODE: 'audio:add-node', //
   ADD_SIGNAL: 'audio:add-signal', //
   PLAY_SIGNAL: 'audio:play-signal', //
@@ -32,7 +34,7 @@ function audio (opts) {
     try {
       // load
       emitter.on(events.LOAD, function (url) {
-        audioManager.load(url)
+        audioManager.load(url).then(() => emitter.emit(events.LOAD_COMPLETE))
       })
       // get user input
       emitter.on(events.GET_USER_INPUT, function () {
@@ -77,8 +79,8 @@ function audio (opts) {
         audioManager.startRecording()
       })
       // stop recording
-      emitter.on(events.START_RECORDING, function (cb) {
-        audioManager.stopRecording(cb)
+      emitter.on(events.START_RECORDING, function () {
+        audioManager.stopRecording(blob => emitter.emit(events.RECORD_COMPLETE, blob))
       })
       // set
       emitter.on(events.SET, function (config) {
