@@ -23,10 +23,9 @@ function mainView (state, emit) {
 }
 function sounds (state, emitter, app) {
   emitter.emit('audio:load', 'some/sound.wav')
-  emitter.emit('audio:play')
-
-  // emitter.emit('audio:pause')
-  // emitter.emit('audio:stop')
+  emitter.on('audio:load-complete', function () {
+    emitter.emit('audio:play')
+  })
 }
 ```
 
@@ -56,7 +55,7 @@ bufferSource > filter > gain >---+
 Keep in mind that buffer sources are internally stored into an array, and there 
 is always a _current track_. If you add nodes, they will be added to the current 
 track. If you add a user input source, it will not be stored in the same playlist, 
-so it will never be the current track
+so it will never be the current track.
 
 ## Events
 ### `audio:load`
@@ -66,6 +65,7 @@ or AudioBuffer, if this is the case, when you trigger the `play` event, all of
 the source will play together, use this if you want to build atmospheric sounds or 
 to mix many audio files into one, later with the `record` events.
 
+### `audio:load-complete`
 ### `audio:get-user-input`
 
 ### `audio:play`
@@ -90,20 +90,18 @@ Start recording with a MediaRecorder object. Get a single boolean argument to sa
 if you want to record from the main source (`true`), or from the user media devices 
 (`false`).
 
-### `audio:start-sharing`
-
-### `audio:download`
-Download the main source for the current track.
+### `audio:record-complete`
 
 ### `audio:stop-recording`
 Stop a recording started with `start-recording` event. Get a callback as the 
 parameter. The callback will get a Blob object with audio data.
 
-### `audio:stop-sharing`
-
 ### `audio:pause`
 Pause the current track,   if the `play` event is trggered after, it will start 
 playing from where it got paused.
+
+### `audio:next`
+### `audio:prev`
 
 ### `audio:stop`
 Stop the current track being played and reset the list to the first track.
@@ -114,12 +112,13 @@ Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio grap
 ### `audio:add-node`
 Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio graph.
 
-### `audio:mix`
-Mix a new source. Get a string or AudioBuffer and will play both sources, you can 
-define which one to play louder by passing a float value between -1 and 1 with -1 
-being all volume for the main source, and 1 all the volume for the second source.
+### `audio:add-signal`
+### `audio:play-signal`
+### `audio:stop-signal`
 
 ## API
+### var audio = require('choo-audio')
+### var store = audio([opts])
 
 ## License
 [MIT](/LICENSE)

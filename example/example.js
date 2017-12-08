@@ -31,7 +31,7 @@ function mainView (state, emit) {
           <meter value="0.2"></meter>
           <meter value="0.3"></meter>
         </li>
-    
+
         <li>
           <input type="range" min="0" max="1" step="0.01" value="0.5" oninput=${setFrequency}/>
         </li>
@@ -39,7 +39,7 @@ function mainView (state, emit) {
         <li>
           <input type="number" min="1" max="100" value="78" oninput=${setVolume}/>
         </li>
-    
+
         <li>
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} onclick=${e => emit('audio:prev')} type="radio" name="radio" data-icon="❮❮" />
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} onclick=${e => emit('audio:play')} type="radio" name="radio" data-icon="►" />
@@ -47,7 +47,7 @@ function mainView (state, emit) {
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} onclick=${e => emit('audio:stop')} type="radio" name="radio" data-icon="■" />
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} type="radio" name="radio" data-icon="●" />
         </li>
-    
+
         <li>
           <progress value="0.3"></progress>
         </li>
