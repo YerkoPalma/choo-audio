@@ -1,3 +1,4 @@
+/* global URL */
 var choo = require('choo')
 var html = require('choo/html')
 var css = require('sheetify')
@@ -47,6 +48,9 @@ function mainView (state, emit) {
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} onclick=${e => emit('audio:stop')} type="radio" name="radio" data-icon="■" />
           <input ${state.audio.tracklist.length < 0 ? 'disabled' : ''} type="radio" name="radio" data-icon="●" />
         </li>
+        <li>
+          <input type="checkbox" data-icon1="○" data-icon2="●" onchange=${record}/>
+        </li>
 
         <li>
           <progress value="0.3"></progress>
@@ -67,12 +71,26 @@ function mainView (state, emit) {
     e.preventDefault()
     emit('audio:set', { volume: e.target.value / 10 })
   }
+
+  function record (e) {
+    e.preventDefault()
+    if (e.target.checked) {
+      emit('audio:start-recording')
+    } else {
+      emit('audio:stop-recording')
+    }
+  }
 }
 
 function loadSounds (state, emitter) {
   emitter.on('audio:load-complete', function () {
-    console.log(state.audio.tracklist.length)
     emitter.emit('render')
+  })
+  emitter.on('audio:record-complete', function (blob) {
+    var anchor = document.createElement('a')
+    anchor.href = URL.createObjectURL(blob)
+    anchor.download = 'music.wav'
+    anchor.click()
   })
   emitter.on('DOMContentLoaded', function () {
     // emitter.emit('audio:load', 'media/techno.wav')

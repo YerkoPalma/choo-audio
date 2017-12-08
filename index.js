@@ -82,7 +82,7 @@ function audio (opts) {
         audioManager.startRecording()
       })
       // stop recording
-      emitter.on(events.START_RECORDING, function () {
+      emitter.on(events.STOP_RECORDING, function () {
         audioManager.stopRecording(blob => emitter.emit(events.RECORD_COMPLETE, blob))
       })
       // set
