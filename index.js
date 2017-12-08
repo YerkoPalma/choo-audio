@@ -5,6 +5,7 @@ var events = audio.events = {
   LOAD: 'audio:load', //
   LOAD_COMPLETE: 'audio:load-complete', //
   GET_USER_INPUT: 'audio:get-user-input', //
+  USER_INPUT: 'audio:user-input', //
   PLAY: 'audio:play', //
   PLAY_ALL: 'audio:play-all', //
   REMOVE: 'audio:remove', //
@@ -34,6 +35,7 @@ function audio (opts) {
     state.audio.graph = audioManager.graph
     state.audio.tracklist = audioManager.tracklist
     state.audio.index = audioManager.index
+    state.audio.userInput = audioManager.userInput
     try {
       // load
       emitter.on(events.LOAD, function (url) {
@@ -41,7 +43,7 @@ function audio (opts) {
       })
       // get user input
       emitter.on(events.GET_USER_INPUT, function () {
-        audioManager.getUserInput()
+        audioManager.getUserInput(() => emitter.emit(events.USER_INPUT))
       })
       // play
       emitter.on(events.PLAY, function (index) {

@@ -135,3 +135,4 @@ Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio grap
 [9]: https://npmjs.org/package/choo-audio
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
+[web-audio-graph]: https://github.com/YerkoPalma/web-audio-graph
