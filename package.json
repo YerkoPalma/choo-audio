@@ -1,8 +1,12 @@
 {
-  "name": "workspace",
-  "version": "1.0.0",
+  "name": "choo-audio",
+  "version": "0.1.0",
   "description": "## Usage",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "lib/AudioManager.js"
+  ],
   "scripts": {
     "test": "standard --verbose | snazzy",
     "start": "budo -p 8080 -H 0.0.0.0 -d example example/example.js:bundle.js -- -t sheetify"
