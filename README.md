@@ -31,9 +31,10 @@ function sounds (state, emitter, app) {
 
 ## How it works?
 
-The whole plugin is based on the web-audio-graph module. It basically dynamically 
-build a graph representing different sources to be played by the user. 
-To start, a track is defined as a simple graph with two nodes.
+The whole plugin is based on the [web-audio-graph][web-audio-graph] module. 
+It basically dynamically build a graph representing different sources to be 
+played by the user. To start, a track is defined as a simple graph with two 
+nodes.
 
 ```text
 bufferSource > filter > gain > contextDestination
@@ -55,26 +56,30 @@ bufferSource > filter > gain >---+
 Keep in mind that buffer sources are internally stored into an array, and there 
 is always a _current track_. If you add nodes, they will be added to the current 
 track. If you add a user input source, it will not be stored in the same playlist, 
-so it will never be the current track.
+so it will never be the current track, and will be always playing, unless you 
+manually disconnect it.
 
 ## Events
 ### `audio:load`
 Emit this to load an audio source. You can pass an url (string) or directly pass 
-the [AudioBuffer][AudioBuffer] instance. Also you can pass an array of strings 
-or AudioBuffer, if this is the case, when you trigger the `play` event, all of 
-the source will play together, use this if you want to build atmospheric sounds or 
-to mix many audio files into one, later with the `record` events.
+the [AudioBuffer][AudioBuffer] instance.
 
 ### `audio:load-complete`
+This event will be fired after a load event, when your buffer is complete loaded.
+
 ### `audio:get-user-input`
+Emit this to ask for user input. When granted, a `user-input` event will be fired.
+
+### `audio:user-input`
+Fired when the user accepted to grant audio input. When this happened, the audio 
+input will be connected to the context destination, and the mediaStream node from 
+the audio graph, will be availaible in the app state through `state.audio.userInput`
 
 ### `audio:play`
-Emit this to play the current audio track. If the current track has more than 
-one source, all of them will be played. If already playing it will not do anything. 
+Emit this to play the current audio track. If already playing it will not do anything. 
 Also notice that if the current track were paused, it will restart from the minute 
-it were paused. Can optionally get two parameters `time` a float to specify the 
-time from which to start playing, defaults to 0, and `loop` a boolean to set if 
-the track should play again, defaults to true.
+it were paused. Can optionally get an integer `index` param, used to play a different 
+track from the current one.
 
 ### `audio:play-all`
 Emit this to play all the tracks loaded.
@@ -86,39 +91,73 @@ Emit this to remove a track from the playlist.
 Clear the whole playlist.
 
 ### `audio:start-recording`
-Start recording with a MediaRecorder object. Get a single boolean argument to say 
-if you want to record from the main source (`true`), or from the user media devices 
-(`false`).
+Start recording with a MediaRecorder object.
 
 ### `audio:record-complete`
+Fired after a `stop-recording` event. Get a blob with the stream 
+recorded as the only param.
 
 ### `audio:stop-recording`
-Stop a recording started with `start-recording` event. Get a callback as the 
-parameter. The callback will get a Blob object with audio data.
+Stop a recording started with `start-recording` event. Also will 
+trigger a `record-complete` event.
 
 ### `audio:pause`
-Pause the current track,   if the `play` event is trggered after, it will start 
+Pause the current track, if the `play` event is trggered after, it will start 
 playing from where it got paused.
 
 ### `audio:next`
+Set the curretnTrack as the next availaible one. If it was the last, set it to 
+the first track on list. If the current track was playing, it will stop it, set 
+the next one as the current track, and play it.
+
 ### `audio:prev`
+Set the curretnTrack as the previous availaible one. If it was the first, set it to 
+the last track on list. If the current track was playing, it will stop it, set 
+the previous one as the current track, and play it.
 
 ### `audio:stop`
 Stop the current track being played and reset the list to the first track.
 
 ### `audio:set`
-Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio graph.
+Set properties for the current track, take a single object parameter with the 
+properties to set. Posible options to set are:
+
+- volume: Float. Set the value fo the [GainNode][GainNode].
+- repeat: Boolean. Repeat the source whene finished playing.
+- loop: Same as repeat.
+- frequency: Float. Set the frequency value in the [BiquadFilter][BiquadFilter].
+- detune: Float. Set the detune value in the [BiquadFilter][BiquadFilter].
+- Q: Float. Set the frequency value in the [BiquadFilter][BiquadFilter].
 
 ### `audio:add-node`
-Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio graph.
+Add an audio node to the graph. This will be added directly to the buffer 
+source of the current track, and then connected to the audio context destination. 
+You must pass the type (string) and optionally the config for that node. For 
+more info about types and configurations, see [web-audio-graph][web-audio-graph] 
+documentation.
 
 ### `audio:add-signal`
+Add an [oscillator source node][OscillatorNode] and connect it to the context destination. You should 
+pass three arguments `id` an unique identifier, `frequency` the frequency of the signal 
+defaults to 440, and `type` the type of the oscillator, defaults to 'sine' for a sine 
+wave. This oscillators are stored in a Map and availaible through `state.audio.signals`
+
 ### `audio:play-signal`
+Play an audio signal by its id.
+
 ### `audio:stop-signal`
+Stop an audio signal by its id.
 
 ## API
-### var audio = require('choo-audio')
-### var store = audio([opts])
+### var store = audio()
+When included in your app, your state will be populated with an `audio` object 
+with the following properties:
+
+- `graph`: The [`web-audio-graph`][web-audio-graph] object that manage all the nodes.
+- `tracklist`: An array with all the buffer source nodes of every track loaded.
+- `index`: The index of the curren track in the tracklist.
+- `userInput`: The streamSource input node populated after a `get-user-input` event.
+- `signals`: A Map with the signals defined with `add-signal` event.
 
 ## License
 [MIT](/LICENSE)
@@ -136,3 +175,6 @@ Set the properties of the [BiquadFilterNode][BiquadFilterNode] of the audio grap
 [10]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [11]: https://github.com/feross/standard
 [web-audio-graph]: https://github.com/YerkoPalma/web-audio-graph
+[GainNode]: https://developer.mozilla.org/en-US/docs/Web/API/GainNode
+[BiquadFilterNode]: https://developer.mozilla.org/es/docs/Web/API/BiquadFilterNode
+[OscillatorNode]: https://developer.mozilla.org/en-US/docs/Web/API/OscillatorNode

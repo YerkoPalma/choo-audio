@@ -25,9 +25,7 @@ var events = audio.events = {
   ERROR: 'audio:error' //
 }
 
-function audio (opts) {
-  opts = opts || {}
-
+function audio () {
   return function (state, emitter) {
     state.audio = {}
     var audioManager = AudioManager()
@@ -36,6 +34,7 @@ function audio (opts) {
     state.audio.tracklist = audioManager.tracklist
     state.audio.index = audioManager.index
     state.audio.userInput = audioManager.userInput
+    state.audio.signals = audioManager.signals
     try {
       // load
       emitter.on(events.LOAD, function (url) {
